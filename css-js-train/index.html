@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS-JS | Train</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IM+Fell+English+SC&family=Prompt:wght@100;300;500;600;700&family=Quicksand:wght@300;400;500;600;700&family=Rancho&family=Rubik:wght@300&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../html-css-train/style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo-holder sot-logo">
+                <img src="https://thetalesfromthesea.files.wordpress.com/2018/03/cropped-sea-of-thieves-logo.png" alt="">
+            </div>
+            <ul>
+                <li><a href="#section-1">Explore</a></li>
+                <li><a href="#section-2">Video</a></li>
+                <li><a href="#section-3">Twitch Drops</a></li>
+                <li><a href="#section-4">Rust Items</a></li>
+            </ul>
+        </div>
+    </nav>
+    <header id="hero-banner">
+        <video autoplay muted loop>
+            <source src="assets/video/KOLD - My Year 2016.mp4" type="video/mp4">
+        </video>
+        <div class="container">
+
+        </div>
+        <button class="video-control" data-video-mute="true">
+            <i class="fa fa-volume-up" aria-hidden="true"></i>
+            <span>Play with Sounds</span>
+        </button>
+    </header>
+
+    <script>
+        const heroBanner = document.querySelector('#hero-banner');
+        const videoBanner = document.querySelector('#hero-banner video');
+        videoBanner.play();
+
+        const videoControl = document.querySelector('[data-video-mute]');
+        videoControl.addEventListener('click', () => {
+            let muteValue = videoBanner.dataset.videoMute == 'true' ? false : true;
+            videoBanner.dataset.videoMute = muteValue;
+            videoBanner.muted = muteValue;
+        });
+
+        // videoBanner.style.height = `${heroBanner.offsetHeight}px`;
+        // console.log(videoBanner.style);
+    </script>
+</body>
+</html>
