@@ -46,7 +46,7 @@
             <source src="assets/video/KOLD - My Year 2016.mp4" type="video/mp4">
         </video>
         <div class="container">
-            <div class="adventurers-content">
+            <div class="adventurers-content" data-main-video="details">
                 <figure>
                     <img src="https://yt3.ggpht.com/ytc/AKedOLTMP27nibIu7zzXID9R3m8HoCjjf4wbJW60DAVqfg=s176-c-k-c0x00ffffff-no-rj" alt="">
                 </figure>
@@ -62,7 +62,7 @@
                     <a href="https://www.youtube.com/watch?v=QJbpJQscn9E" target="_blank" class="o-btn o-btn-trans o-btn-small o-btn-cir-primary">
                         <i class="fa fa-youtube-play"></i>
                     </a>
-                    <button class="o-btn o-btn-trans o-btn-small o-btn-cir-primary">
+                    <button class="o-btn o-btn-trans o-btn-small o-btn-cir-primary" data-main-control="playing">
                         <i class="fa fa-pause"></i>
                     </button>
                 </div>
@@ -182,6 +182,7 @@
         // onload video play
         const heroBanner = document.querySelector('#hero-banner');
         const videoBanner = document.querySelector('#hero-banner video');
+        const mainVideoDetails = document.querySelector('[data-main-video="details"]');
         videoBanner.play();
 
         // play sound function
@@ -191,7 +192,6 @@
             let muteValue = controllerEl.dataset.videoMute == 'true' ? false : true;
             el.target.dataset.videoMute = muteValue;
             videoBanner.muted = muteValue;
-            console.log(videoBanner.currentTime);
         });
 
         loadVideosAsPic();
@@ -200,18 +200,82 @@
             const videoCards = document.querySelectorAll('[data-video-cards]');
             videoCards.forEach( (el) => {
                 const eachVideo = el.querySelector('video');
+
+                // setting this so we can have a thumbnail for the video
                 setTimeout(() => {
                     eachVideo.pause();
                 }, 1000);
 
+                // mouseover mouseout action
                 el.addEventListener('mouseover', (moEl) => {
                     eachVideo.play();
                 });
                 el.addEventListener('mouseout', (moEl) => {
                     eachVideo.pause();
                 });
+
+                el.addEventListener('click', (buttonEl) => {
+                    settingMainVideoContent(el);
+                });
+
+
             });
             
+        }
+
+        function enableSounds() {
+            // unmute video since we have a user trigger action
+            videoBanner.muted = false;
+            document.querySelector('[data-video-mute]').dataset.videoMute = false;
+        }
+
+        function settingMainVideoContent(currentEl) {
+            const adventurerPic = currentEl.querySelector('img').getAttribute('src');
+            const adventurerName = currentEl.querySelector('h3').innerText;
+            const adventurerVideo = currentEl.querySelector('h5').innerText;
+            const adventurerList = currentEl.querySelectorAll('ul li');
+            const adventurerVideoEl = currentEl.querySelector('video');
+            const adventurerCurrentVideoTime = adventurerVideoEl.currentTime;
+            const adventurerVideoSrc = adventurerVideoEl.querySelector('source').getAttribute('src');
+
+            mainVideoDetails.querySelector('img').setAttribute('src', adventurerPic);
+            mainVideoDetails.querySelector('h3').innerText = adventurerName;
+            mainVideoDetails.querySelector('h5').innerText = adventurerVideo;
+            adventurerList.forEach((liEl, key) => {
+                mainVideoDetails.querySelectorAll('ul li')[key].innerText = liEl.innerText; 
+            });
+
+            videoBanner.querySelector('source').setAttribute('src', adventurerVideoSrc);
+            videoBanner.load();
+            videoBanner.currentTime = adventurerCurrentVideoTime;
+            enableSounds();
+        }
+
+        toggleMainVideo();
+        function toggleMainVideo() {
+            const mainVideoControl = document.querySelector('[data-main-control]');
+            mainVideoControl.addEventListener('click', (el) => {
+                const controllerEl = el.target.closest('[data-main-control]');
+                const dataSet = controllerEl.dataset;
+                const currentVideoStatus = dataSet.mainControl;
+                const iconEl = controllerEl.querySelector('i');
+
+                enableSounds();
+                switch (currentVideoStatus) {
+                    case 'playing':
+                        videoBanner.pause();
+                        dataSet.mainControl = 'paused';
+                        iconEl.classList.remove("fa-pause");
+                        iconEl.classList.add("fa-play");
+                        break;
+                    case 'paused':
+                        videoBanner.play();
+                        dataSet.mainControl = 'playing';
+                        iconEl.classList.add("fa-pause");
+                        iconEl.classList.remove("fa-play");
+                        break;
+                }
+            });
         }
     </script>
 </body>
