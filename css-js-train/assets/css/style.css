@@ -167,6 +167,11 @@ nav .profile-icon .dropdown li a {
     position: relative;
 }
 
+#hero-banner .container {
+    position: relative;
+    z-index: 3;
+}
+
 #hero-banner video {
     position: absolute;
     right: 0;
@@ -450,4 +455,20 @@ nav .profile-icon .dropdown li a {
 }
 .header .adventurers-content .adventurers-content_cta {
     margin-left: auto
+}
+
+.header-loading-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #333;
+    z-index: 2;
+    transform: translateX(-100%);
+    transition: .4s cubic-bezier(.63,0,.71,.88);
+}
+
+.header-loading-overlay.show {
+    transform: translateX(0);
 }

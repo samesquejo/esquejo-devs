@@ -42,7 +42,8 @@
         </div>
     </nav>
     <header id="hero-banner" class="header">
-        <video autoplay muted loop>
+        <div class="header-loading-overlay" data-loading-overlay="0"></div>
+        <video autoplay controls muted  data-current-video="0" >
             <source src="assets/video/KOLD - My Year 2016.mp4" type="video/mp4">
         </video>
         <div class="container">
@@ -183,6 +184,8 @@
         const heroBanner = document.querySelector('#hero-banner');
         const videoBanner = document.querySelector('#hero-banner video');
         const mainVideoDetails = document.querySelector('[data-main-video="details"]');
+        const loadingOvelay = document.querySelector('[data-loading-overlay]');
+        const videoCards = document.querySelectorAll('[data-video-cards]');
         videoBanner.play();
 
         // play sound function
@@ -197,14 +200,13 @@
         loadVideosAsPic();
 
         function loadVideosAsPic() {
-            const videoCards = document.querySelectorAll('[data-video-cards]');
-            videoCards.forEach( (el) => {
+            videoCards.forEach( (el, key) => {
                 const eachVideo = el.querySelector('video');
 
                 // setting this so we can have a thumbnail for the video
                 setTimeout(() => {
                     eachVideo.pause();
-                }, 1000);
+                }, 2000);
 
                 // mouseover mouseout action
                 el.addEventListener('mouseover', (moEl) => {
@@ -215,7 +217,7 @@
                 });
 
                 el.addEventListener('click', (buttonEl) => {
-                    settingMainVideoContent(el);
+                    settingMainVideoContent(el, key);
                 });
 
 
@@ -229,7 +231,8 @@
             document.querySelector('[data-video-mute]').dataset.videoMute = false;
         }
 
-        function settingMainVideoContent(currentEl) {
+        function settingMainVideoContent(currentEl, elKey = 0) {
+            setLoading(true);
             const adventurerPic = currentEl.querySelector('img').getAttribute('src');
             const adventurerName = currentEl.querySelector('h3').innerText;
             const adventurerVideo = currentEl.querySelector('h5').innerText;
@@ -237,6 +240,7 @@
             const adventurerVideoEl = currentEl.querySelector('video');
             const adventurerCurrentVideoTime = adventurerVideoEl.currentTime;
             const adventurerVideoSrc = adventurerVideoEl.querySelector('source').getAttribute('src');
+            
 
             mainVideoDetails.querySelector('img').setAttribute('src', adventurerPic);
             mainVideoDetails.querySelector('h3').innerText = adventurerName;
@@ -244,11 +248,15 @@
             adventurerList.forEach((liEl, key) => {
                 mainVideoDetails.querySelectorAll('ul li')[key].innerText = liEl.innerText; 
             });
-
-            videoBanner.querySelector('source').setAttribute('src', adventurerVideoSrc);
-            videoBanner.load();
-            videoBanner.currentTime = adventurerCurrentVideoTime;
-            enableSounds();
+            document.querySelector('header').scrollIntoView({ behavior: 'smooth', block: 'start'});
+            setTimeout(() => {
+                videoBanner.dataset.currentVideo = elKey;
+                videoBanner.querySelector('source').setAttribute('src', adventurerVideoSrc);
+                videoBanner.load();
+                videoBanner.currentTime = adventurerCurrentVideoTime;
+                setLoading(false);
+                enableSounds();
+            }, 1500);
         }
 
         toggleMainVideo();
@@ -274,6 +282,27 @@
                         iconEl.classList.add("fa-pause");
                         iconEl.classList.remove("fa-play");
                         break;
+                }
+            });
+        }
+
+        function setLoading(state) {
+            if (state) {
+                loadingOvelay.classList.add('show');
+            } else {
+                loadingOvelay.classList.remove('show');
+            }
+        }
+
+        checkVideoFinish();
+
+        function checkVideoFinish() {
+            videoBanner.addEventListener('ended',(el) => {
+                const currentVideoKey = parseInt(el.target.dataset.currentVideo);
+                if (currentVideoKey < videoCards.length -1 ) {
+                    settingMainVideoContent(videoCards[currentVideoKey + 1], currentVideoKey + 1);
+                } else {
+                    settingMainVideoContent(videoCards[0], 0);
                 }
             });
         }
