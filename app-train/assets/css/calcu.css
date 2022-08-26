@@ -1,0 +1,25 @@
+section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+.container {
+    display: flex;
+    
+}
+.calculator {
+    display: flex;
+    flex-wrap: wrap;
+    width: 400px;
+}
+
+.calculator .o-btn {
+    width: calc(33.3333% - 20px);
+    margin: 10px;
+}
+.o-btn {
+    border: 1px solid #e46699;
+    background-color: #fff;
+    color: #333;
+}
